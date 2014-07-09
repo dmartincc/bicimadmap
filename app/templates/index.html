@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="map" style="height:91%;">
+    <div class="row-fluid overlay">
+      <div class="span9"></div>
+      <div class="span3">
+        <br>       
+        <!--div id="chart"></div-->
+      </div>    
+    </div>    
+  </div>  
+  <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+  <script>
+
+    function getColor(d) {
+    return d > 20  ? '#00651E' :
+           d > 16  ? '#24B24E' :
+           d > 12  ? '#FEDE00' :
+           d > 8   ? '#FE5600' :
+           d > 4   ? '#B20100' :
+           d > 0   ? '#7F0100' :
+                      '#650100';
+    }
+
+    function getLocation() {
+    if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(showPosition);            
+        };
+    }
+
+    function showPosition(position) {
+        var lat = position.coords.latitude;
+        var lng = position.coords.longitude;
+        var geoCode = [lat,lng];
+        var circle = L.circle(geoCode, 200, {
+                  color: '#004B7F',
+                  fillColor: '#0069B2',
+                  fillOpacity: 0.5,
+                  weight: 1
+              }).addTo(map)
+        .bindPopup('Estás aquí');    
+        var circle = L.circle(geoCode, 10, {
+                  color: '#004B7F',
+                  fillColor: '#004B7F',
+                  fillOpacity: 1,
+                  weight: 1
+              }).addTo(map);               
+    }
+
+
+
+    
+
+    var data ={{data|tojson}};
+    console.log(data);
+
+    var map = L.map('map').setView([40.418,-3.7], 14);
+    
+    L.tileLayer('https://{s}.tiles.mapbox.com/v3/dmartincc.inn76mk4/{z}/{x}/{y}.png', {
+            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery  <a href="http://cloudmade.com">CloudMade</a>',
+            maxZoom: 18
+        }).addTo(map);
+
+    getLocation();
+        
+    
+    {% for item in data %}  
+        var geojsonMarkerOptions = {
+        radius: 5,
+        fillColor: getColor({{item['bikes']}}),
+        color: "#F8FBFE",
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 1
+        };      
+        L.circleMarker([{{item['lat']}},{{item['lng']}}],geojsonMarkerOptions).addTo(map)
+         .bindPopup('<h4><strong>{{item.name}}</strong></h4><strong>Bicicletas Disponibles:</strong> {{item.bikes}} <br>  <strong>Bases Libres:</strong> {{item.free}} <br> <strong>Estado:</strong> {{item.active}}');         
+    {% endfor %}
+
+    var legend = L.control({position: 'bottomright'});
+
+    legend.onAdd = function (map) {
+
+        var div = L.DomUtil.create('div', 'info legend'),
+            grades = [0, 4, 8, 12, 16, 20],
+            labels = [];
+
+        
+        // loop through our density intervals and generate a label with a colored square for each interval
+        for (var i = 0; i < grades.length; i++) {
+            div.innerHTML +=
+                '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+                grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+        }
+
+        return div;
+    };
+
+    legend.addTo(map);
+
+    var circle = L.circle(getLocation, 500, {
+    color: 'red',
+    fillColor: '#f03',
+    fillOpacity: 0.5
+}).addTo(map);
+
+  </script> 
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://code.jquery.com/jquery.js"></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="/static/js/bootstrap.min.js"></script>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+
+ var data= []
+      for(var i=0;i<60;i++){
+        data.push(Math.random()*10  );
+      };
+
+var yMin = d3.min(data);
+var yMax = d3.max(data);
+       
+console.log(data);
+
+     
+var margin = {top: 30, right: 50, bottom: 50, left: 10},
+    width = 400 - margin.left - margin.right,
+    height = 100 - margin.top - margin.bottom;
+
+var x = d3.scale.ordinal()
+    .domain([0,data.length])
+    .rangeRoundBands([0,width], .2);
+
+console.log(x.rangeBand())
+
+var y = d3.scale.linear()
+    .domain([yMin, yMax])
+    .range([0,height]);
+
+var svg = d3.select("#chart").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var beta =width/data.length;
+
+  svg.selectAll(".bar")
+      .data(data)
+      .enter().append("rect")
+      .attr("class", "bar")
+      .attr("y", function(d,i) { return y(Math.min(0, -d)); })
+      .attr("x", function(d) { return data.indexOf(d)*beta; })
+      .attr("height", function(d) { return Math.abs(y(0)-y(d)); })
+      .attr("width", beta-1.5)
+      .append("title")
+      .text(function(d) {
+            return "This value is " + Math.round(d);
+         });;
+  
+</script>
+<script>
+
+var data= []
+      for(var i=0;i<50;i++){
+        data.push( 1/ Math.log(10*i^2)*Math.random() );
+      };
+
+var yMin = d3.min(data);
+var yMax = d3.max(data);
+       
+console.log(data);
+
+     
+var margin = {top: 30, right: 50, bottom: 50, left: 10},
+    width = 100 - margin.left - margin.right,
+    height = 150 - margin.top - margin.bottom;
+
+
+
+var y = d3.scale.linear()
+    .domain([yMin, yMax])
+    .range([height,0])
+    .nice();
+
+var x = d3.time.scale()
+      .range([0, width]);
+
+var beta =width/data.length;
+var line = d3.svg.line()
+      // assign the X function to plot our line as we wish
+      .x(function(d,i) {return data.indexOf(d)*beta;})
+      .y(function(d) { return y(d);});
+
+var svg = d3.select("#chart2").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+svg.append("path")
+      .datum(data)
+      .attr("class", "line")
+      .attr("d", line(data));
+ 
+</script> 
+{% endblock %}
