@@ -1,0 +1,5 @@
+bases,lat,name,occupyRate,free,datetime,active,bikes,dateMilliseconds,address,disponibilityRate,lng,_id,id
+24,40.4168961,Puerta del Sol A,59,10,2014-07-10 18:31:52.195000,True,14,1405017112000,Puerta del Sol No 1,41,-3.7024255,53bebffa5d12e50f30ce04f1,1a
+24,40.4170009,Puerta del Sol B,71,7,2014-07-10 18:31:52.195000,True,17,1405017112000,Puerta del Sol No 1,29,-3.7024207,53bebffa5d12e50f30ce04f2,1b
+24,40.4205886,Miguel Moya,46,13,2014-07-10 18:31:52.195000,True,11,1405017112000,Miguel Moya No 1,54,-3.7058415,53bebffa5d12e50f30ce04f3,2
+18,40.4302937,Conde Suchil,50,9,2014-07-10 18:31:52.195000,True,9,1405017112000, Plaza Conde Suchil No 2-4,50,-3.7069171,53bebffa5d12e50f30ce04f4,3
