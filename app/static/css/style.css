@@ -20,12 +20,12 @@
         
 
         #map .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 314159;
-    pointer-events: none;
-}
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 314159;
+        pointer-events: none;
+    }
 
     .bar {
       fill: #A8ABBF;
