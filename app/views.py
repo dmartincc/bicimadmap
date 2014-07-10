@@ -1,5 +1,4 @@
-from flask import render_template
-from flask import jsonify
+from flask import render_template, request, jsonify
 from app import app
 import json, time, requests
 
