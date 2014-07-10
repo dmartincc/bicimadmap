@@ -2,8 +2,8 @@
 {% block content %}
 <div id="map" style="height:88%;">
     <div class="row-fluid overlay">
-      <div class="span9"></div>
-      <div class="span3">
+      <!--div class="col-xs-12 col-md-9"></div>
+      <div class="col-xs-12 col-md-3"-->
         <br>       
         <!--div id="chart"></div-->
       </div>    
@@ -46,10 +46,6 @@
                   weight: 1
               }).addTo(map);               
     }
-
-
-
-    
 
     var data ={{data|tojson}};
     console.log(data);
@@ -105,11 +101,7 @@
 }).addTo(map);
 
   </script> 
-  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-  <script src="https://code.jquery.com/jquery.js"></script>
-  <!-- Include all compiled plugins (below), or include individual files as needed -->
-  <script src="/static/js/bootstrap.min.js"></script>
-  <script src="http://d3js.org/d3.v3.min.js"></script>
+   <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 
 

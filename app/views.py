@@ -27,12 +27,12 @@ def index():
 		dataNew.append(dic)
      
     
-    return render_template("index.html", data = dataNew)
+    return render_template("index.html", data = dataNew, title="Bienvenido")
 
 
 @app.route('/about')
 def about():
-	return render_template("about.html")
+	return render_template("about.html", title="Sobre BiciMadMap")
 
 
 @app.route('/sitemap')
