@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="about">
+	<br>
+	<div class="container">
+		<h1>Oferta y Demanda</h1>
+	</div>
+	<div class="container" style="background-color:#ECECEC">
+		<div class="col-xs-12 col-md-2 text-center" >			
+				<p style="font-size:80px">{{data[0]['occupyBikes']}}</p>
+				<h4 sytle="color:grey"><a href="/analytics?query=occupy" id="link">Bicicletas Ocupadas</a></h4>
+				<br>
+				<p style="font-size:80px">{{data[0]['freeBikes']}}</p>
+				<a href="/analytics?query=free" id="link"><h4 >Bicicletas Libres</h4></a>
+				<p style="font-size:80px">{{perc}}%</p>
+				<a href="/analytics?query=rate" id="link"><h4 sytle="color:grey">Ocupación</h4></a>
+				<br>
+		</div>
+		<div class="col-xs-12 col-md-1 text-center" ></div>
+		<div class="col-xs-12 col-md-8 text-center" >
+			<br>
+			<br>
+			<div id="chart">
+			  <svg></svg>
+			</div>
+		</div>
+	</div>	
+	<br>
+	<br>
+	<br>
+	<br>
+</div>
+<script src="/static/js/charts.js"></script>
+<script>
+	var data = {{timeSerie|tojson|safe}};	
+	lineChart(data);
+</script>
+{% endblock %}

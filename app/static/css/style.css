@@ -16,7 +16,9 @@
             height: 98%;
             width: 100%;
         }
-        a,h1,h2 {color:white;}
+        a, h1,h2 {color:white;}
+
+        #link {color:grey;}
         
 
         #map .overlay {
@@ -26,6 +28,11 @@
         z-index: 314159;
         pointer-events: none;
     }
+
+
+#chart svg {
+  height: 400px;
+}
 
     .bar {
       fill: #A8ABBF;
@@ -38,6 +45,12 @@
       background-color: #ECECEC;
       text-align: center
     }
+
+    #ban2 {
+      background-color: white;
+      
+    }
+
 
     .legend {
         line-height: 18px;

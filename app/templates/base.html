@@ -10,10 +10,15 @@
   <meta name="twitter:site" content="@BiciMadMap"> 
   <!-- Latest compiled and minified CSS -->  
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  {%if graph%}
+  <link href="/static/css/nv.d3.min.css" rel="stylesheet" type="text/css">  
+  {%endif%}
   <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" /> 
   <link href='http://fonts.googleapis.com/css?family=Dosis:300' rel='stylesheet' type='text/css'>
   <link href='/static/css/style.css' rel='stylesheet' type='text/css'> 
   <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet"> 
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <script src="/static/js/nv.d3.min.js" charset="utf-8"></script>
 </head>
 <body>     
   <div class="container-fluid" id="header">
@@ -28,6 +33,7 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">      
       <ul class="nav navbar-nav navbar-right">
+        <li><a href="/analytics">Analytics</a></li>
         <li><a href="/about">Sobre BiciMadMap</a></li>        
       </ul>
     </div><!-- /.navbar-collapse -->

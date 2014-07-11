@@ -1,10 +1,11 @@
 from flask import render_template, request, jsonify
 from app import app
 import json, time, requests
+from functions import *
+
 
 @app.route('/')
-def index():
-    
+def index():    
     r = requests.get('http://bicimad.herokuapp.com/bicimad.json')
     data=json.loads(r.text)
     dataNew=[]
@@ -34,6 +35,37 @@ def index():
 def about():
 	return render_template("about.html", title="Sobre BiciMadMap")
 
+@app.route('/analytics')
+def analytics():
+	db = get_db('bicimadmap')
+	data=db.demand.find().sort("datetime",-1).limit(1)
+	perc=int(data[0]['occupyBikesRate'])
+
+	dataAll=db.demand.find()
+	if request.args.get('query') :
+		if request.args.get('query') == "free":
+			timeSerie=[{"key":"Bicicletas Libres","values":[]}]
+			for item in dataAll:		
+				timeSerie[0]['values'].append([item['dateMilliseconds'],item['freeBikes']])
+		elif request.args.get('query') == "occupy":
+			timeSerie=[{"key":"Bicicletas Ocupadas","values":[]}]
+			for item in dataAll:		
+				timeSerie[0]['values'].append([item['dateMilliseconds'],item['occupyBikes']])		
+		elif request.args.get('query') == "rate":
+			timeSerie=[{"key":"Tasa de ocupacion","values":[]}]
+			for item in dataAll:
+				timeSerie[0]['values'].append([item['dateMilliseconds'],item['occupyBikesRate']])
+	else:
+		timeSerie=[{"key":"Bicicletas Ocupadas","values":[]}]
+		for item in dataAll:		
+			timeSerie[0]['values'].append([item['dateMilliseconds'],item['occupyBikes']])
+
+	return render_template("analytics.html", 
+							title="BiciMadMap Analytics", 
+							data=data,
+							perc=perc,
+							timeSerie=timeSerie,
+							graph=True)
 
 @app.route('/sitemap')
 def sitemap():
