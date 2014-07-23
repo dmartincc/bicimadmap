@@ -1,4 +1,5 @@
-import requests, datetime, json, calendar, csv
+# -*- coding: utf-8 -*-
+import requests, json, calendar, csv, feedparser
 from datetime import datetime
 
 time = datetime.now()
@@ -30,6 +31,8 @@ def get_db(db_name):
 def getData():
 	db = get_db('bicimadmap')
 	r = requests.get('http://bicimad.herokuapp.com/bicimad.json')
+	d = feedparser.parse('http://weather.yahooapis.com/forecastrss?w=766273&u=c')	
+	
 	data=json.loads(r.text)	
 	output=[]
 	sumBikesOnStation = 0
@@ -69,6 +72,14 @@ def getData():
 	dic2['freeSpaces']=sumSpacesOnStation
 	dic2['freeBikesRate']=(float(sumBikesOnStation)/totalBikes)*100
 	dic2['occupyBikesRate'] = 100- dic2['freeBikesRate']
+	dic2['windSpeed'] = float(d['feed']['yweather_wind']['speed'])
+	dic2['temperature'] = int(d['feed']['yweather_wind']['chill'])
+	dic2['pressure'] = float(d['feed']['yweather_atmosphere']['pressure'])
+	dic2['humidity'] = float(d['feed']['yweather_atmosphere']['humidity'])
+	dic2['visibility'] = float(d['feed']['yweather_atmosphere']['visibility'])
+	dic2['weatherText'] = d['entries'][0]['yweather_condition']['text']
+	dic2['weatherCode'] = int(d['entries'][0]['yweather_condition']['code'])
+	 
 	db.demand.insert(dic2)
 
 	#it writes data just for one data and time
@@ -77,16 +88,33 @@ def getData():
 
 def extractData():
 	db = get_db('bicimadmap')
-	dataDemand = db.demand.find()
-	dataStationts = db.stations.find()
+	dataDemand = db.demand.find({"humidity":{"$ne":None}})
+	output=[]
+	for item in dataDemand:
+		date=datetime.strptime(str(item['datetime']), "%Y-%m-%d %H:%M:%S.%f")
+		item['weekday']= date.weekday()
+		item['hour']= date.hour
+		item['month']= date.month
+		item['minute']= date.minute
+		item['day']= date.day	
+		output.append(item)
 
-	writeCSV(dataDemand,"dataDemand")
-	writeCSV(dataStationts,"dataStationts")
+	writeCSV(output,"dataDemand")
+
+	"""dataStations = db.stations.find()
+	output=[]
+	for item in dataStations:
+		item['address']= item['address'].encode('utf-8')
+		item['name']= item['name'].encode('utf-8')
+		output.append(item)
+
+	
+	writeCSV(output,"dataStations")"""
 
 
 def main():
-	getData()
-	#extractData()
+	#getData()
+	extractData()
 
 if __name__ == '__main__':
 	main()
