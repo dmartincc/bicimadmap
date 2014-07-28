@@ -5,30 +5,32 @@ from functions import *
 
 
 @app.route('/')
-def index():    
-    r = requests.get('http://bicimad.herokuapp.com/bicimad.json')
-    data=json.loads(r.text)
-    dataNew=[]
-    geo=[]
-    for item in data[0]:
+def index(): 
+	r = requests.get('http://bicimad-api.herokuapp.com/api-v1/locations')   
+	data=json.loads(r.text)
+	db = get_db('bicimadmap')  
+	dataNew=[]
+	geo=[]
+	for item in data['locations']:
 		dic={}
+		data=db.stations.find({'id':item['idestacion']}).limit(1)
 		dic['name']=item['nombre']
 		dic['adress']=item['direccion']
 		dic['lat']=float(item['latitud'])
 		dic['lng']=float(item['longitud'])
-		if item['activo'] == "1": 
+		if item['activo'] == True: 
 			estado = "Activo" 
 		else: 
 			estado = "No Activo"
 		dic['active']= estado
-		dic['bases']=int(item['numero_bases'])
+		dic['bases']=data[0]['bases']
 		dic['free']=int(item['libres'])
-		dic['bikes']=int(item['numero_bases'])-int(item['libres'])
+		dic['bikes']=dic['bases']-int(item['libres'])
 		dic['availability']=item['porcentaje']
 		dataNew.append(dic)
-     
-    
-    return render_template("index.html", data = dataNew, title="Bienvenido")
+	 
+
+	return render_template("index.html", data = dataNew, title="Bienvenido")
 
 
 @app.route('/about')

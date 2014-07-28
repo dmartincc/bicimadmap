@@ -30,7 +30,7 @@ def get_db(db_name):
 
 def getData():
 	db = get_db('bicimadmap')
-	r = requests.get('http://bicimad.herokuapp.com/bicimad.json')
+	r = requests.get('http://bicimad-api.herokuapp.com/api-v1/locations')
 	d = feedparser.parse('http://weather.yahooapis.com/forecastrss?w=766273&u=c')	
 	
 	data=json.loads(r.text)	
@@ -39,7 +39,8 @@ def getData():
 	sumSpacesOnStation = 0
 	for item in data[0]:
 		dic={}
-		dic['id']=item['numero_estacion']
+		data=db.stations.find({'id':item['idestacion']}).limit(1)
+		dic['id']=item['idestacion']
 		dic['name']=item['nombre'].encode('utf-8')		
 		dic['datetime']=time
 		dic['dateMilliseconds']=dateToMilliseconds(dic['datetime'])		
@@ -47,14 +48,14 @@ def getData():
 		dic['lat']=float(item['latitud'])
 		dic['lng']=float(item['longitud'])
 		dic['zone']= str(round(dic['lat'],2)) +"-"+ str(round(dic['lng'],2))
-		if item['activo'] == "1":
+		if item['activo'] == True:
 			estado = True 
 		else: 
 			estado = False
 		dic['active']= estado
-		dic['bases']=int(item['numero_bases'])
+		dic['bases']=data[0]['bases']
 		dic['free']=int(item['libres'])
-		dic['bikes']=int(item['numero_bases'])-int(item['libres'])
+		dic['bikes']=int(dic['bases'])-int(item['libres'])
 		dic['disponibilityRate']=int(item['porcentaje'])		
 		dic['occupyRate'] = 100-dic['disponibilityRate']	
 		db.stations.insert(dic)
